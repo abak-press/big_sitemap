@@ -11,7 +11,11 @@ class BigSitemap
       'xsi:schemaLocation' => "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
     }
 
+    attr_reader :lastmod
+
     def initialize(options)
+      @@lastmod       ||= {}
+
       @gzip           = options.delete(:gzip)
       @max_urls       = options.delete(:max_urls) || MAX_URLS
       @type           = options.delete(:type)
@@ -30,12 +34,16 @@ class BigSitemap
     end
 
     def add_url!(location, options={})
+      if !@@lastmod[@current_filename.to_s] || options[:last_modified] > @@lastmod[@current_filename.to_s]
+        @@lastmod[@current_filename.to_s] = options[:last_modified]
+      end
+
       _rotate(options[:id]) if @max_urls == @urls
       _open_tag 'url'
 
       tag! 'loc', location
       tag! 'lastmod', options[:last_modified].utc.strftime('%Y-%m-%dT%H:%M:%S+00:00') if options[:last_modified]
-      tag! 'changefreq', options[:change_frequency] || 'weekly'
+      tag! 'changefreq', options[:change_frequency] if options[:change_frequency]
       tag! 'priority', options[:priority] if options[:priority]
 
       _close_tag 'url'

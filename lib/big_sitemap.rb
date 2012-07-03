@@ -190,11 +190,14 @@ class BigSitemap
   # Create a sitemap index document
   def generate_sitemap_index(files=nil)
     files ||= Dir[dir_files]
+    BigSitemap::Builder.lastmod.sort {|a,b| a[1]<=>b[1]}
 
-    with_sitemap({:name => 'index', :type => 'index'}) do |sitemap|
+    with_sitemap({:name => 'index', :type => 'index', :gzip => false}) do |sitemap|
       for path in files
         next if path =~ /index/
-        sitemap.add_url! url_for_sitemap(path), :last_modified => File.stat(path).mtime
+
+        lastmod = BigSitemap::Builder.lastmod[path] || File.stat(path).mtime
+        sitemap.add_url! url_for_sitemap(path), :last_modified => lastmod
       end
     end
 
@@ -371,13 +374,17 @@ class BigSitemap
   end
 
   def with_sitemap(options={})
+    options[:name] = @options[:filename] unless options[:name]
+
     options[:filename]       ||= file_name(options[:name])
     options[:type]           ||= 'sitemap'
     options[:max_urls]       ||= @options["max_per_#{options[:type]}".to_sym]
-    options[:gzip]           ||= @options[:gzip]
     options[:indent]         ||= 2
-    options[:partial_update] ||= @options[:partial_update]
     options[:start_part_id]  ||= first_id_of_last_sitemap
+
+    options[:gzip]           = @options[:gzip] if options[:gzip].nil?
+    options[:partial_update] = @options[:partial_update] if options[:partial_update].nil?
+    
 
     sitemap = if options[:type] == 'index'
       IndexBuilder.new(options)
