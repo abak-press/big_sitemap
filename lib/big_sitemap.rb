@@ -192,9 +192,9 @@ class BigSitemap
     files ||= Dir[dir_files]
     BigSitemap::Builder.lastmod.sort {|a,b| a[1]<=>b[1]}
 
-    with_sitemap({:name => 'index', :type => 'index', :gzip => false}) do |sitemap|
+    with_sitemap({:name => '', :type => 'index', :gzip => false}) do |sitemap|
       for path in files
-        next if path =~ /index/
+        next if path == ''
 
         lastmod = BigSitemap::Builder.lastmod[path] || File.stat(path).mtime
         sitemap.add_url! url_for_sitemap(path), :last_modified => lastmod
