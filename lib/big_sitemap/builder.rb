@@ -76,6 +76,7 @@ class BigSitemap
       filename = @filename.dup
       filename << "_#{@parts}" if @parts > 0 && @type != 'index'
       filename << '.xml'
+      filename = 'sitemap.xml' if @type == 'index'
       filename << '.gz' if @gzip
       _open_writer(filename)
     end
