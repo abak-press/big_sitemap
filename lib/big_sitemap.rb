@@ -190,7 +190,7 @@ class BigSitemap
   # Create a sitemap index document
   def generate_sitemap_index(files=nil)
     files ||= Dir[dir_files]
-    BigSitemap::Builder.lastmod.sort {|a,b| a[1]<=>b[1]}
+    files.sort! if files
 
     with_sitemap({:name => nil, :type => 'index', :gzip => false}) do |sitemap|
       for path in files
