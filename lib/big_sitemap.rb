@@ -192,7 +192,7 @@ class BigSitemap
     files ||= Dir[dir_files]
     BigSitemap::Builder.lastmod.sort {|a,b| a[1]<=>b[1]}
 
-    with_sitemap({:name => '', :type => 'index', :gzip => false}) do |sitemap|
+    with_sitemap({:name => nil, :type => 'index', :gzip => false}) do |sitemap|
       for path in files
         next if path == ''
 
@@ -374,7 +374,7 @@ class BigSitemap
   end
 
   def with_sitemap(options={})
-    options[:name] = @options[:filename] unless options[:name]
+    options[:name] = @options[:filename] unless options[:name] || options[:type] == 'index'
 
     options[:filename]       ||= file_name(options[:name])
     options[:type]           ||= 'sitemap'
