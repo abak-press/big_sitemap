@@ -6,9 +6,7 @@ class BigSitemap
     MAX_URLS = 50000
     HEADER_NAME = 'urlset'
     HEADER_ATTRIBUTES = {
-      'xmlns' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
-      'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
-      'xsi:schemaLocation' => "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+      'xmlns' => 'http://www.sitemaps.org/schemas/sitemap/0.9'
     }
     
     def self.lastmod
@@ -156,7 +154,9 @@ class BigSitemap
   class IndexBuilder < Builder
     HEADER_NAME = 'sitemapindex'
     HEADER_ATTRIBUTES = {
-      'xmlns' => 'http://www.sitemaps.org/schemas/sitemap/0.9'
+      'xmlns' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
+      'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
+      'xsi:schemaLocation' => "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
     }
 
     def add_url!(location, options={})
