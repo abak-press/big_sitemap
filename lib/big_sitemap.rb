@@ -194,7 +194,7 @@ class BigSitemap
 
     with_sitemap({:name => nil, :type => 'index', :gzip => false}) do |sitemap|
       for path in files
-        next if path == ''
+        next if path.include? 'sitemap.xml'
 
         lastmod = BigSitemap::Builder.lastmod[path] || File.stat(path).mtime
         sitemap.add_url! url_for_sitemap(path), :last_modified => lastmod
